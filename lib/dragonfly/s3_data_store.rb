@@ -47,6 +47,7 @@ module Dragonfly
       headers = {'Content-Type' => content.mime_type}
       headers.merge!(opts[:headers]) if opts[:headers]
       uid = opts[:path] || generate_uid(content.name || 'file')
+      uid = File.join(opts[:prefix], uid) if opts.has_key?(:prefix)
 
       rescuing_socket_errors do
         content.file do |f|
@@ -137,7 +138,7 @@ module Dragonfly
     end
 
     def generate_uid(name)
-      "#{Time.now.strftime '%Y/%m/%d/%H/%M/%S'}/#{SecureRandom.uuid}/#{name}"
+      "#{Time.now.strftime '%Y/%m'}/#{SecureRandom.uuid}/#{name}"
     end
 
     def full_path(uid)
